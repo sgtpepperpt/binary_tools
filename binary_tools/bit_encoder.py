@@ -1,9 +1,9 @@
 import math
 
-from src.binary_util import bit_list_to_byte, byte_to_bit_list, set_bit
+from binary_tools import binary_util
 
 
-class BitAlignedEncoder:
+class BitEncoder:
     def __init__(self):
         self.__buf = [False, False, False, False]
         self.__data = b''
@@ -12,7 +12,7 @@ class BitAlignedEncoder:
         full_bytes = math.floor(len(self.__buf) / 8)
 
         for i in range(full_bytes):
-            self.__data += bit_list_to_byte(self.__buf[i*8:i*8+8]).to_bytes(1, 'big')
+            self.__data += binary_util.bit_list_to_byte(self.__buf[i*8:i*8+8]).to_bytes(1, 'big')
             self.__buf = self.__buf[i+8:]
 
     def put_bit(self, bit: bool):
@@ -33,7 +33,7 @@ class BitAlignedEncoder:
         if not (0 <= byte <= 255):
             raise ValueError('Byte must be between 0 and 255!')
 
-        self.put_bits(byte_to_bit_list(byte))
+        self.put_bits(binary_util.byte_to_bit_list(byte))
 
     def put_bytes(self, bs: bytes):
         if not isinstance(bs, bytes):
@@ -52,7 +52,7 @@ class BitAlignedEncoder:
 
         last_byte = 0x00
         for i in range(remaining_bits):
-            last_byte = set_bit(last_byte, 7 - i, self.__buf[i])
+            last_byte = binary_util.set_bit(last_byte, 7 - i, self.__buf[i])
         self.__data += last_byte.to_bytes(1, 'big')
 
         head = remaining_bits << 4 | self.__data[0]
@@ -60,7 +60,7 @@ class BitAlignedEncoder:
         return head.to_bytes(1, 'big') + self.__data[1:]
 
 
-class BitAlignedDecoder:
+class BitDecoder:
     def __init__(self, data: bytes):
         if not isinstance(data, bytes):
             raise ValueError('Must provide a byte string!')
@@ -69,13 +69,13 @@ class BitAlignedDecoder:
 
         head = data[0]
         remaining_bits = head >> 4
-        actual_head_bits = byte_to_bit_list(head & 0x0F)[4:]
+        actual_head_bits = binary_util.byte_to_bit_list(head & 0x0F)[4:]
         self.__buf.extend(actual_head_bits)
 
         data = data[1:]
 
         for b in data:
-            self.__buf.extend(byte_to_bit_list(b))
+            self.__buf.extend(binary_util.byte_to_bit_list(b))
 
         if remaining_bits > 0:
             self.__buf = self.__buf[:-(8-remaining_bits)]
@@ -97,6 +97,6 @@ class BitAlignedDecoder:
 
         byte_string = b''
         for i in range(full_bytes):
-            byte_string += bit_list_to_byte(self.__buf[i*8:i*8 + 8]).to_bytes(1, 'big')
+            byte_string += binary_util.bit_list_to_byte(self.__buf[i*8:i*8 + 8]).to_bytes(1, 'big')
 
         return byte_string

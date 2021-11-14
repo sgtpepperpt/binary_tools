@@ -3,8 +3,8 @@ import random
 import string
 import unittest
 
-from src.binary_encoder import BinaryEncoder, BinaryDecoder
-from src.bit_encoder import BitAlignedEncoder, BitAlignedDecoder
+from binary_tools import bit_encoder
+from binary_tools import byte_encoder
 
 
 def id_generator(size):
@@ -18,11 +18,11 @@ class TestBit(unittest.TestCase):
             for _ in range(random.randrange(16251)):
                 bits.append(random.random() > 0.5)
 
-            a = BitAlignedEncoder()
+            a = bit_encoder.BitEncoder()
             a.put_bits(bits)
             result = a.finalise()
 
-            b = BitAlignedDecoder(result)
+            b = bit_encoder.BitDecoder(result)
             recovered = b.as_bit_list()
 
             self.assertEqual(bits, recovered)
@@ -32,7 +32,7 @@ class TestByte(unittest.TestCase):
     def test_random(self):
         funcs = ['string', 'int', 'bool', 'byte']
         for _ in range(100):
-            enc = BinaryEncoder()
+            enc = byte_encoder.ByteEncoder()
 
             ops = [random.choice(funcs) for _ in range(random.randrange(152))]
             values = []
@@ -56,7 +56,7 @@ class TestByte(unittest.TestCase):
                     values.append(v)
 
             generated = enc.get_data()
-            dec = BinaryDecoder(generated)
+            dec = byte_encoder.ByteDecoder(generated)
 
             for op in ops:
                 if op == 'string':

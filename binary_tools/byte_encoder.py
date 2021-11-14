@@ -1,4 +1,4 @@
-from src.bit_encoder import BitAlignedEncoder, BitAlignedDecoder
+from binary_tools import bit_encoder
 
 
 def _string_len(data: bytes):
@@ -8,9 +8,9 @@ def _string_len(data: bytes):
     return pos
 
 
-class BinaryEncoder:
+class ByteEncoder:
     def __init__(self):
-        self.__bit_buf = BitAlignedEncoder()
+        self.__bit_buf = bit_encoder.BitEncoder()
 
     def put_string(self, string: str):
         binarised_str = string.encode('ascii') + b'\x00'
@@ -32,9 +32,9 @@ class BinaryEncoder:
         return self.__bit_buf.finalise()
 
 
-class BinaryDecoder:
+class ByteDecoder:
     def __init__(self, data: bytes):
-        self.__buf = BitAlignedDecoder(data)
+        self.__buf = bit_encoder.BitDecoder(data)
 
     def has_more(self):
         return self.__buf.has_more()

@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='binary_tools',
-    version='0.0.1',
+    version='0.1.0',
     author='Guilherme Borges',
     author_email='guilherme@guilhermeborges.net',
     description='Pyhton tools for binary data',
