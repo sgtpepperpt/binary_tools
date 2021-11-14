@@ -11,7 +11,7 @@ def id_generator(size):
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(size))
 
 
-class TestBitAlignment(unittest.TestCase):
+class TestBit(unittest.TestCase):
     def test_random(self):
         for _ in range(10000):
             bits = []
@@ -28,7 +28,7 @@ class TestBitAlignment(unittest.TestCase):
             self.assertEqual(bits, recovered)
 
 
-class TestBinary(unittest.TestCase):
+class TestByte(unittest.TestCase):
     def test_random(self):
         funcs = ['string', 'int', 'bool', 'byte']
         for _ in range(100):
